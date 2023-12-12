@@ -1,0 +1,41 @@
+
+{
+  "settings": {
+    "number_of_shards": 5,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "properties": {
+      "level": {
+        "type": "text"
+      },
+      "message":{
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "resourceId":{
+        "type":"text"
+      },
+      "traceId":{
+        "type": "text"
+      },
+      "spanId":{
+        "type": "text"
+      },
+      "commit":{
+        "type": "text"
+      },
+      "parentResourceId":{
+        "type": "text"
+      },
+      "timestamp":{
+        "type": "date",
+        "format" : "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis||yyyy-MM-dd'T'HH:MM:ss'Z'"
+      }
+    }
+  }
+}

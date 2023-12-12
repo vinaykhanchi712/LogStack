@@ -1,0 +1,131 @@
+PUT logstack/_doc/1
+{
+  "level": "error",
+  "message": "this is success",
+  "spandId": "1a",
+  "traceId": "2a",
+  "resourceId": "3a",
+  "parentResourceId": "4a",
+  "commit": "5a",
+  "timestamp": "2023-10-02 10:01:01"
+}
+
+..///////
+
+PUT logstack/_doc/2
+{
+  "level": "info",
+  "message": "success is myth",
+  "spandId": "1b",
+  "traceId": "2b",
+  "resourceId": "3b",
+  "parentResourceId": "4b",
+  "commit": "5b",
+  "timestamp": "2023-10-03 11:01:01"
+}
+
+.////////
+
+PUT logstack/_doc/3
+{
+  "level": "info",
+  "message": "can not be failure",
+  "spandId": "1c",
+  "traceId": "2c",
+  "resourceId": "3c",
+  "parentResourceId": "4c",
+  "commit": "5c",
+  "timestamp": "2023-10-02 11:01:01"
+}
+
+/.////////
+
+GET logstack/_search
+{
+  "size": 10,
+  "query": {
+    "match_phrase": {
+      "message": "success"
+    },
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "spandId": "1a"
+          }
+        }
+      ]
+    }
+
+  }
+}
+
+
+./////////
+
+GET logstack/_search
+{
+  "size": 10,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "message": "success is"
+          }
+        }
+      ],
+      "filter": [
+        {
+          "term": {
+            "spandId": ""
+          }
+        }
+      ]
+    }
+  }
+}
+
+.//////////
+
+GET logstack/_search
+{
+  "from": 0,
+  "size": 10,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_phrase": {
+            "message": {
+              "query": "success",
+              "slop": 0,
+              "zero_terms_query": "NONE",
+              "boost": 1
+            }
+          }
+        }
+      ],
+      "filter": [
+        {
+          "term": {
+            "level": {
+              "value": "info",
+              "boost": 1
+            }
+          }
+        }
+      ],
+      "adjust_pure_negative": true,
+      "boost": 1
+    }
+  },
+  "sort": [
+    {
+      "timestamp": {
+        "order": "asc"
+      }
+    }
+  ]
+}
+
